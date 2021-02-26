@@ -3,6 +3,7 @@
 namespace Alxbbarbosa\DI;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * Class ContainerTest
@@ -23,9 +24,9 @@ class ContainerTest extends TestCase
     public function test_DeveriaRetornar1_depoisDeVincular_stdClassComString_QuandoInformar_stringTeste_ParaStdClass()
     {
         $container = new Container();
-        $stdClass = new \stdClass();
+        $stdClass = new stdClass();
         
-        $container->juntar('teste', $stdClass);
+        $container->adicionar('teste', $stdClass);
 
         $actual = $container->obterTodos();
 
@@ -35,9 +36,9 @@ class ContainerTest extends TestCase
     public function test_DeveriaRetornar_stdClass_QuandoInformar_stringTeste_paraStdClass()
     {
         $container = new Container();
-        $stdClass = new \stdClass();
+        $stdClass = new stdClass();
 
-        $container->juntar('teste', $stdClass);
+        $container->adicionar('teste', $stdClass);
 
         $actual = $container->obterPorInterface('teste');
 
@@ -48,7 +49,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->juntar('teste', \stdClass::class);
+        $container->adicionar('teste', stdClass::class);
 
         $actual = $container->obterPorInterface('teste');
 
@@ -59,7 +60,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->juntar('teste', ['classe' => \stdClass::class]);
+        $container->adicionar('teste', ['classe' => stdClass::class]);
 
         $stdClass1 = $container->obterPorInterface('teste');
         $stdClass2 = $container->obterPorInterface('teste');
@@ -73,7 +74,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->juntar('teste', ['classe' => \stdClass::class, 'reconstruir']);
+        $container->adicionar('teste', ['classe' => stdClass::class, 'reconstruir']);
 
         $stdClass1 = $container->obterPorInterface('teste');
         $stdClass2 = $container->obterPorInterface('teste');
@@ -87,16 +88,16 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
 
-        $container->juntar('teste', ['classe' => new class {
+        $container->adicionar('teste', ['classe' => new class {
             public function __invoke()
             {
-                return new \stdClass();
+                return new stdClass();
             }
         }]);
 
         $actual = $container->obterPorInterface('teste');
 
-        $this->assertInstanceOf(\stdClass::class, $actual);
+        $this->assertInstanceOf(stdClass::class, $actual);
 
     }
 }

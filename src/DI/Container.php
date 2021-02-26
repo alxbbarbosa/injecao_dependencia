@@ -2,6 +2,10 @@
 
 namespace Alxbbarbosa\DI;
 
+use ReflectionClass;
+use ReflectionException;
+use ReflectionObject;
+
 /**
  * Class Container
  * @package Alxbbarbosa\DI
@@ -23,9 +27,15 @@ class Container
     /**
      * @param string $interface
      * @param mixed $objetoConcreto
+     * @return Container
+     * @throws ReflectionException
      */
-    public function juntar(string $interface, $objetoConcreto)
+    public function adicionar(string $interface, $objetoConcreto)
     {
+        if (empty($interface) || empty($objetoConcreto)) {
+            return $this;
+        }
+
         if (is_string($objetoConcreto)) {
             $objetoConcreto = $this->processarString($objetoConcreto);
         }
@@ -36,6 +46,8 @@ class Container
         }
 
         $this->container[$interface] = $objetoConcreto;
+
+        return $this;
     }
 
     /**
@@ -57,7 +69,10 @@ class Container
      */
     private function processarRetorno(string $interface): ?object
     {
-        /** @var mixed $objetoConcreto */
+        if (empty($interface)) {
+            return null;
+        }
+
         $objetoConcreto = $this->container[$interface];
 
         if (is_object($objetoConcreto)) {
@@ -77,7 +92,7 @@ class Container
      */
     private function processarObjeto(object $objetoConcreto): object
     {
-        $reflectionObject = new \ReflectionObject($objetoConcreto);
+        $reflectionObject = new ReflectionObject($objetoConcreto);
 
         if ($reflectionObject->hasMethod('__invoke')) {
             return ($objetoConcreto)();
@@ -89,10 +104,11 @@ class Container
     /**
      * @param string $dados
      * @return object|null
+     * @throws ReflectionException
      */
     private function processarString(string $dados): ?object
     {
-        $reflectionClass = new \ReflectionClass($dados);
+        $reflectionClass = new ReflectionClass($dados);
 
         if ($reflectionClass->isInstantiable()) {
             return $reflectionClass->newInstance();
@@ -104,10 +120,11 @@ class Container
     /**
      * @param array $dados
      * @return object|null
+     * @throws ReflectionException
      */
     private function processarArray(array $dados): ?object
     {
-        if (!isset($dados['classe'])) {
+        if (empty($dados) || !isset($dados['classe'])) {
             return null;
         }
 

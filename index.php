@@ -2,13 +2,14 @@
 
 require "vendor/autoload.php";
 
-use \App\Services\PessoaServiceFactory;
-use \App\Services\PessoaServiceInterface;
+use Alxbbarbosa\DI\Container;
+use App\Services\PessoaServiceFactory;
+use App\Services\PessoaServiceInterface;
 
-$container = new \Alxbbarbosa\DI\Container();
+$container = new Container();
 
 /** Feito o bind - Junção */
-$container->juntar(PessoaServiceInterface::class, (new PessoaServiceFactory())());
+$container->adicionar(PessoaServiceInterface::class, PessoaServiceFactory::class);
 
 
 /** @var PessoaServiceInterface $pessoaService - obter o serviço PessoaService a partir do container*/
